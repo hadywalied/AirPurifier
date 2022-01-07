@@ -106,27 +106,32 @@
 
             <RadioGroup
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:checkedButton="@id/staticVal">
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/breathing"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Breathing" />
+                    android:text="breathing" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/fan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Fan" />
+                    android:text="fan" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/staticVal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Static" />
+                    android:text="static" />
 
                 <com.google.android.material.radiobutton.MaterialRadioButton
+                    android:id="@+id/off"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Off" />
+                    android:text="off" />
             </RadioGroup>
 
             <com.github.antonpopoff.colorwheel.ColorWheel
