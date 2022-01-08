@@ -9,10 +9,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.github.hadywalied.airpurifier.R
-import com.github.hadywalied.airpurifier.domain.BASE_URL
-import com.github.hadywalied.airpurifier.domain.IpConfiguration
-import com.github.hadywalied.airpurifier.domain.OilData
-import com.github.hadywalied.airpurifier.domain.ResponseMessage
+import com.github.hadywalied.airpurifier.domain.*
+import kotlinx.android.synthetic.main.config_ap_wifi_layout.*
+import kotlinx.android.synthetic.main.config_oil_layout.*
 
 class MainFragment : Fragment() {
 
@@ -28,7 +27,11 @@ class MainFragment : Fragment() {
     private val ipObserver: Observer<IpConfiguration> = Observer { t -> BASE_URL = t.ip }
 
     private fun handleOilData(t: OilData?) {
-        TODO("Not yet implemented")
+        if (t != null) {
+            oilPercentageTextView.text = "Oil Precentage: ${t.percentage}%"
+            oilPercentage.progress = t.percentage
+            oilTimeTextView.text = "Remaining Time (s): ${t.lifetime}"
+        }
     }
 
     private fun showError(t: ResponseMessage?) {
@@ -46,8 +49,8 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
         //setting observers
@@ -55,6 +58,21 @@ class MainFragment : Fragment() {
         viewModel.errorLivedata.observe(viewLifecycleOwner, errorObserver)
         viewModel.oillivedata.observe(viewLifecycleOwner, oilObserver)
         viewModel.iplivedata.observe(viewLifecycleOwner, ipObserver)
+
+        setApBtn.setOnClickListener {
+            val ssidName = apSSIDEdit.text.toString()
+            val passwd = apPasswordEdit.text.toString()
+            if (ssidName.isNotBlank() and ssidName.isNotEmpty() and passwd.isNotEmpty() and passwd.isNotBlank()) {
+                var wifiConfig = WifiConfig(ssidName, passwd)
+                viewModel.sendWifiConfig(wifiConfig)
+            } else {
+                Toast.makeText(
+                    context,
+                    "Please Check the SSID and Password Values",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
     }
 
