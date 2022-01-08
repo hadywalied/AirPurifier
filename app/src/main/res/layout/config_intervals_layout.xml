@@ -106,6 +106,7 @@
                 android:text="Mode" />
 
             <RadioGroup
+                android:id="@+id/intervalsRadioGroup"
                 android:layout_width="match_parent"
                 android:checkedButton="@id/custom"
                 android:layout_height="wrap_content">
@@ -149,6 +150,7 @@
                     android:hint="On Time (seconds)">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/onTimeEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number" />
@@ -163,6 +165,7 @@
                     android:hint="Off Time (minutes)">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/offTimeEdit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number" />
@@ -177,6 +180,7 @@
                     android:hint="Period (hours)">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/periodEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number" />
@@ -191,6 +195,7 @@
                     android:text="Power (%)" />
 
                 <com.google.android.material.slider.RangeSlider
+                    android:id="@+id/powerSlider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:stepSize="10.0"

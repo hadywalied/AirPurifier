@@ -10,10 +10,10 @@ import retrofit2.Response
 
 class MainViewModel : ViewModel() {
 
-    lateinit var responselivedata: MutableLiveData<ResponseMessage>
-    lateinit var oillivedata: MutableLiveData<OilData>
-    lateinit var iplivedata: MutableLiveData<IpConfiguration>
-    lateinit var errorLivedata: MutableLiveData<String>
+    var responselivedata = MutableLiveData<ResponseMessage>()
+    var oillivedata = MutableLiveData<OilData>()
+    var iplivedata = MutableLiveData<IpConfiguration>()
+    var errorLivedata = MutableLiveData<String>()
 
 
     fun sendWifiConfig(wifiConfig: WifiConfig) {
