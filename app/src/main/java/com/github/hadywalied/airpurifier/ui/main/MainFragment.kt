@@ -35,7 +35,14 @@ class MainFragment : Fragment() {
     private fun handleIpConfiguration(t: IpConfiguration?) {
         if (t != null) {
             BASE_URL = t.ip
-            viewModel.getOilData()
+            if (BASE_URL != "-1")
+                viewModel.getOilData()
+            else
+                Toast.makeText(
+                    context,
+                    "Please set the Wifi Configurations in order to be able to use the app.",
+                    Toast.LENGTH_SHORT
+                ).show()
         }
     }
 
@@ -112,7 +119,14 @@ class MainFragment : Fragment() {
                     Color.blue(rgb),
                     materialRadioButton.text.toString()
                 )
-            viewModel.sendLightConfigurations(lightConfig)
+            if (BASE_URL != "-1")
+                viewModel.sendLightConfigurations(lightConfig)
+            else
+                Toast.makeText(
+                    context,
+                    "Please set the Wifi Configurations in order to be able to use the app.",
+                    Toast.LENGTH_SHORT
+                ).show()
         }
         // endregion
 
@@ -144,7 +158,14 @@ class MainFragment : Fragment() {
                             Integer.valueOf(periodEditText.text.toString()),
                             Integer.valueOf(powerSlider.values[1].toString())
                         )
-                    viewModel.sendIntervalsConfigurations(intervalsConfig)
+                    if (BASE_URL != "-1")
+                        viewModel.sendIntervalsConfigurations(intervalsConfig)
+                    else
+                        Toast.makeText(
+                            context,
+                            "Please set the Wifi Configurations in order to be able to use the app.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                 } else {
                     Toast.makeText(
                         context,
@@ -161,7 +182,14 @@ class MainFragment : Fragment() {
                         0,
                         0
                     )
-                viewModel.sendIntervalsConfigurations(intervalsConfig)
+                if (BASE_URL != "-1")
+                    viewModel.sendIntervalsConfigurations(intervalsConfig)
+                else
+                    Toast.makeText(
+                        context,
+                        "Please set the Wifi Configurations in order to be able to use the app.",
+                        Toast.LENGTH_SHORT
+                    ).show()
             }
         }
         //endregion
@@ -169,7 +197,14 @@ class MainFragment : Fragment() {
         //region motion
         setMotionBtn.setOnClickListener {
             val motionSensorConfig = MotionSensorConfig(toggleMotionBtn.isChecked)
-            viewModel.sendMotionConfigurations(motionSensorConfig)
+            if (BASE_URL != "-1")
+                viewModel.sendMotionConfigurations(motionSensorConfig)
+            else
+                Toast.makeText(
+                    context,
+                    "Please set the Wifi Configurations in order to be able to use the app.",
+                    Toast.LENGTH_SHORT
+                ).show()
         }
         //endregion
 
@@ -205,7 +240,14 @@ class MainFragment : Fragment() {
             } else {
                 oil_card_group.visibility = View.VISIBLE
                 oil_show.setImageResource(android.R.drawable.arrow_up_float)
-                viewModel.getOilData()
+                if (BASE_URL != "-1")
+                    viewModel.getOilData()
+                else
+                    Toast.makeText(
+                        context,
+                        "Please set the Wifi Configurations in order to be able to use the app.",
+                        Toast.LENGTH_SHORT
+                    ).show()
             }
         }
 

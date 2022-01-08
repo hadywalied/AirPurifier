@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 var CONFIG_URL = "192.168.100.1"
-var BASE_URL = "192.168.1.100"
+var BASE_URL = "-1"
 
 enum class DataType {
     light, motion, interval, oil, wifiConfig, ipConfig, response
