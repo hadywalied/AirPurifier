@@ -134,13 +134,26 @@
                     android:layout_height="wrap_content"
                     android:text="off" />
             </RadioGroup>
-
-            <com.github.antonpopoff.colorwheel.ColorWheel
-                android:id="@+id/colorWheel"
+            <LinearLayout
+                android:id="@+id/colorWheelLayout"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_marginTop="24dp"
-                android:padding="8dp" />
+                android:layout_height="wrap_content" >
+                <com.github.antonpopoff.colorwheel.ColorWheel
+                    android:id="@+id/colorWheel"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="24dp"
+                    android:padding="8dp" />
+
+                <com.github.antonpopoff.colorwheel.gradientseekbar.GradientSeekBar
+                    android:id="@+id/gradient"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+
+
         </LinearLayout>
 
 

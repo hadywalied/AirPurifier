@@ -13,6 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
 
@@ -20,23 +21,18 @@ val JSON: MediaType = "application/json; charset=utf-8".toMediaType()
  * Configuration For the Server
  */
 interface NetworkInterface {
-    @POST("/setRGBLEDS")
-    fun sendLightConfig(@Body lightConfig: LightConfig): Call<ResponseMessage>
+    @POST
+    fun sendLightConfig(@Url baseUrl: String, @Body lightConfig: LightConfig): Call<ResponseMessage>
 
-    @POST("/motionSensor")
-    fun sendMotionConfig(@Body motionSensorConfig: MotionSensorConfig): Call<ResponseMessage>
+    @POST
+    fun sendMotionConfig(@Url baseUrl: String, @Body motionSensorConfig: MotionSensorConfig): Call<ResponseMessage>
 
-    @POST("/interavals")
-    fun sendInterval(@Body intervalsConfig: IntervalsConfig): Call<ResponseMessage>
+    @POST
+    fun sendInterval(@Url baseUrl: String, @Body intervalsConfig: IntervalsConfig): Call<ResponseMessage>
 
-    @GET("/oil")
-    fun getOil(): Call<OilData>
-}
+    @GET
+    fun getOil(@Url baseUrl: String): Call<OilData>
 
-/**
- * Configuration of the AP
- */
-interface ApInterface {
     @POST("/wifiConfig")
     fun setWifiConfig(@Body wifiConfig: WifiConfig): Call<ResponseMessage>
 
@@ -58,19 +54,12 @@ private val moshi = Moshi.Builder().add(
 val httpLogging = HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY }
 val httpClient = OkHttpClient.Builder().addInterceptor(httpLogging).build()
 
-var retrofitAp = Retrofit.Builder()
+var retrofit: Retrofit = Retrofit.Builder()
     .baseUrl(CONFIG_URL)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .client(httpClient)
     .build()
 
-var retrofitServer = Retrofit.Builder()
-    .baseUrl(BASE_URL)
-    .addConverterFactory(MoshiConverterFactory.create(moshi))
-    .client(httpClient)
-    .build()
-
-var server = retrofitServer.create<NetworkInterface>(NetworkInterface::class.java)
-var ap = retrofitAp.create<ApInterface>(ApInterface::class.java)
+var ap = retrofit.create(NetworkInterface::class.java)
 
 

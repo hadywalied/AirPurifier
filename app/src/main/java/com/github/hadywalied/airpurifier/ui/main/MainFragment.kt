@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
+import com.github.antonpopoff.colorwheel.gradientseekbar.setTransparentToColor
 import com.github.hadywalied.airpurifier.R
 import com.github.hadywalied.airpurifier.domain.*
 import com.google.android.material.radiobutton.MaterialRadioButton
@@ -27,7 +28,7 @@ class MainFragment : Fragment() {
 
     private lateinit var viewModel: MainViewModel
 
-    private val responseObserver: Observer<ResponseMessage> = Observer { t -> showError(t) }
+    private val responseObserver: Observer<ResponseMessage> = Observer { t -> responseHandler(t) }
     private val errorObserver: Observer<String> = Observer { t -> showError(t) }
     private val oilObserver: Observer<OilData> = Observer { t -> handleOilData(t) }
     private val ipObserver: Observer<IpConfiguration> = Observer { t -> handleIpConfiguration(t) }
@@ -35,7 +36,7 @@ class MainFragment : Fragment() {
     private fun handleIpConfiguration(t: IpConfiguration?) {
         if (t != null) {
             BASE_URL = t.ip
-            if (BASE_URL != "-1")
+            if (BASE_URL != "http://192.168.4.1:80")
                 viewModel.getOilData()
             else
                 Toast.makeText(
@@ -54,7 +55,7 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun showError(t: ResponseMessage?) {
+    private fun responseHandler(t: ResponseMessage?) {
         Toast.makeText(context, t?.message, Toast.LENGTH_SHORT).show()
     }
 
@@ -98,28 +99,28 @@ class MainFragment : Fragment() {
         modeRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
             val materialRadioButton = radioGroup.findViewById<MaterialRadioButton>(i)
             when (materialRadioButton.text) {
-                "breathing", "off", "fan" -> run {
-                    colorWheel.visibility = View.GONE
+                "off", "fan" -> run {
+                    colorWheelLayout.visibility = View.GONE
                 }
-                "static" -> {
-                    colorWheel.visibility = View.VISIBLE
+                "breathing", "static" -> {
+                    colorWheelLayout.visibility = View.VISIBLE
                 }
             }
         }
-
+        colorWheel.colorChangeListener = {i -> gradient.setTransparentToColor(i)}
         setColorBtn.setOnClickListener {
             val rgb = colorWheel.rgb
             val materialRadioButton =
                 modeRadioGroup.findViewById<MaterialRadioButton>(modeRadioGroup.checkedRadioButtonId)
             val lightConfig =
                 LightConfig(
-                    Color.alpha(rgb),
+                    Color.alpha(gradient.argb),
                     Color.red(rgb),
                     Color.green(rgb),
                     Color.blue(rgb),
                     materialRadioButton.text.toString()
                 )
-            if (BASE_URL != "-1")
+            if (BASE_URL != "http://192.168.4.1:80")
                 viewModel.sendLightConfigurations(lightConfig)
             else
                 Toast.makeText(
@@ -158,7 +159,7 @@ class MainFragment : Fragment() {
                             Integer.valueOf(periodEditText.text.toString()),
                             Integer.valueOf(powerSlider.values[1].toString())
                         )
-                    if (BASE_URL != "-1")
+                    if (BASE_URL != "http://192.168.4.1:80")
                         viewModel.sendIntervalsConfigurations(intervalsConfig)
                     else
                         Toast.makeText(
@@ -182,7 +183,7 @@ class MainFragment : Fragment() {
                         0,
                         0
                     )
-                if (BASE_URL != "-1")
+                if (BASE_URL != "http://192.168.4.1:80")
                     viewModel.sendIntervalsConfigurations(intervalsConfig)
                 else
                     Toast.makeText(
@@ -197,7 +198,7 @@ class MainFragment : Fragment() {
         //region motion
         setMotionBtn.setOnClickListener {
             val motionSensorConfig = MotionSensorConfig(toggleMotionBtn.isChecked)
-            if (BASE_URL != "-1")
+            if (BASE_URL != "http://192.168.4.1:80")
                 viewModel.sendMotionConfigurations(motionSensorConfig)
             else
                 Toast.makeText(
@@ -240,7 +241,7 @@ class MainFragment : Fragment() {
             } else {
                 oil_card_group.visibility = View.VISIBLE
                 oil_show.setImageResource(android.R.drawable.arrow_up_float)
-                if (BASE_URL != "-1")
+                if (BASE_URL != "http://192.168.4.1:80")
                     viewModel.getOilData()
                 else
                     Toast.makeText(

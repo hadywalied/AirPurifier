@@ -1,11 +1,13 @@
 package com.github.hadywalied.airpurifier.ui.main
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.hadywalied.airpurifier.domain.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.http.Url
 
 
 class MainViewModel : ViewModel() {
@@ -23,6 +25,7 @@ class MainViewModel : ViewModel() {
                 response: Response<ResponseMessage>
             ) {
                 responselivedata.postValue(response.body())
+                Log.i(MainViewModel::class.java.name, "onResponse: $response")
                 if (response.body()?.success == true) getIp()
             }
 
@@ -51,57 +54,60 @@ class MainViewModel : ViewModel() {
 
 
     fun sendLightConfigurations(lightConfig: LightConfig) {
-        server.sendLightConfig(lightConfig).enqueue(object : Callback<ResponseMessage> {
-            override fun onResponse(
-                call: Call<ResponseMessage>,
-                response: Response<ResponseMessage>
-            ) {
-                responselivedata.postValue(response.body())
-            }
+        ap.sendLightConfig(BASE_URL + "/setRGBLEDS", lightConfig)
+            .enqueue(object : Callback<ResponseMessage> {
+                override fun onResponse(
+                    call: Call<ResponseMessage>,
+                    response: Response<ResponseMessage>
+                ) {
+                    responselivedata.postValue(response.body())
+                }
 
-            override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
-                errorLivedata.postValue(t.message)
-            }
+                override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+                    errorLivedata.postValue(t.message)
+                }
 
-        })
+            })
     }
 
     fun sendMotionConfigurations(motionSensorConfig: MotionSensorConfig) {
-        server.sendMotionConfig(motionSensorConfig).enqueue(object : Callback<ResponseMessage> {
-            override fun onResponse(
-                call: Call<ResponseMessage>,
-                response: Response<ResponseMessage>
-            ) {
-                responselivedata.postValue(response.body())
-            }
+        ap.sendMotionConfig(BASE_URL + "/motionSensor", motionSensorConfig)
+            .enqueue(object : Callback<ResponseMessage> {
+                override fun onResponse(
+                    call: Call<ResponseMessage>,
+                    response: Response<ResponseMessage>
+                ) {
+                    responselivedata.postValue(response.body())
+                }
 
-            override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
-                errorLivedata.postValue(t.message)
-            }
+                override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+                    errorLivedata.postValue(t.message)
+                }
 
-        })
+            })
     }
 
 
     fun sendIntervalsConfigurations(intervalsConfig: IntervalsConfig) {
-        server.sendInterval(intervalsConfig).enqueue(object : Callback<ResponseMessage> {
-            override fun onResponse(
-                call: Call<ResponseMessage>,
-                response: Response<ResponseMessage>
-            ) {
-                responselivedata.postValue(response.body())
-            }
+        ap.sendInterval(BASE_URL + "/intervals", intervalsConfig)
+            .enqueue(object : Callback<ResponseMessage> {
+                override fun onResponse(
+                    call: Call<ResponseMessage>,
+                    response: Response<ResponseMessage>
+                ) {
+                    responselivedata.postValue(response.body())
+                }
 
-            override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
-                errorLivedata.postValue(t.message)
-            }
+                override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+                    errorLivedata.postValue(t.message)
+                }
 
-        })
+            })
     }
 
 
     fun getOilData() {
-        server.getOil().enqueue(object : Callback<OilData> {
+        ap.getOil(BASE_URL + "/oil").enqueue(object : Callback<OilData> {
             override fun onResponse(
                 call: Call<OilData>,
                 response: Response<OilData>
