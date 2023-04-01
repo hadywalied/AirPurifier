@@ -1,6 +1,9 @@
 package com.github.hadywalied.airpurifier.ui.main
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -19,6 +22,25 @@ import kotlinx.android.synthetic.main.config_intervals_layout.*
 import kotlinx.android.synthetic.main.config_light_layout.*
 import kotlinx.android.synthetic.main.config_motion_layout.*
 import kotlinx.android.synthetic.main.config_oil_layout.*
+import java.lang.Float
+import android.util.Log
+
+import android.os.Environment
+import androidx.annotation.RequiresApi
+import java.lang.StringBuilder
+
+import android.widget.TextView
+import java.io.*
+
+import com.github.hadywalied.airpurifier.MainActivity
+
+import android.content.Intent.getIntent
+
+import android.content.Intent
+
+
+
+
 
 class MainFragment : Fragment() {
 
@@ -34,16 +56,37 @@ class MainFragment : Fragment() {
     private val ipObserver: Observer<IpConfiguration> = Observer { t -> handleIpConfiguration(t) }
 
     private fun handleIpConfiguration(t: IpConfiguration?) {
+
         if (t != null) {
             BASE_URL = t.ip
+
+            //save ip to local storage
+
+                val outputStreamWriter = OutputStreamWriter(
+                    requireContext().openFileOutput(
+                        "config.txt",
+                        Context.MODE_PRIVATE
+                    )
+                )
+                outputStreamWriter.write(BASE_URL)
+                outputStreamWriter.close()
+                Log.d("TOTONAY", "7mada $BASE_URL")
+
+        /*
             if (BASE_URL != "http://192.168.4.1:80")
-                viewModel.getOilData()
+                //viewModel.getOilData()
+
             else
+
                 Toast.makeText(
                     context,
                     "Please set the Wifi Configurations in order to be able to use the app.",
                     Toast.LENGTH_SHORT
                 ).show()
+                */
+
+
+
         }
     }
 
@@ -56,11 +99,11 @@ class MainFragment : Fragment() {
     }
 
     private fun responseHandler(t: ResponseMessage?) {
-        Toast.makeText(context, t?.message, Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, t?.message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showError(t: String) {
-        Toast.makeText(context, t, Toast.LENGTH_SHORT).show()
+        //Toast.makeText(context, t, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCreateView(
@@ -70,6 +113,7 @@ class MainFragment : Fragment() {
         return inflater.inflate(R.layout.main_fragment, container, false)
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
@@ -123,11 +167,12 @@ class MainFragment : Fragment() {
             if (BASE_URL != "http://192.168.4.1:80")
                 viewModel.sendLightConfigurations(lightConfig)
             else
-                Toast.makeText(
+                viewModel.sendLightConfigurations(lightConfig)
+                /*Toast.makeText(
                     context,
                     "Please set the Wifi Configurations in order to be able to use the app.",
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
         }
         // endregion
 
@@ -151,22 +196,24 @@ class MainFragment : Fragment() {
                     and offTimeEdit.text.toString().isNotEmpty()
                     and periodEditText.text.toString().isNotEmpty()
                 ) {
+
                     val intervalsConfig =
                         IntervalsConfig(
                             mode = radioButton.text.toString(),
                             Integer.valueOf(onTimeEdit.text.toString()),
                             Integer.valueOf(offTimeEdit.text.toString()),
                             Integer.valueOf(periodEditText.text.toString()),
-                            Integer.valueOf(powerSlider.values[1].toString())
+                            Float.valueOf(Float.toString(powerSlider.values[0])).toInt()
                         )
-                    if (BASE_URL != "http://192.168.4.1:80")
+                    if (BASE_URL != "http://192.168.4.1:80") {
+
+
+
                         viewModel.sendIntervalsConfigurations(intervalsConfig)
+                    }
                     else
-                        Toast.makeText(
-                            context,
-                            "Please set the Wifi Configurations in order to be able to use the app.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        viewModel.sendIntervalsConfigurations(intervalsConfig)
+
                 } else {
                     Toast.makeText(
                         context,
@@ -186,11 +233,12 @@ class MainFragment : Fragment() {
                 if (BASE_URL != "http://192.168.4.1:80")
                     viewModel.sendIntervalsConfigurations(intervalsConfig)
                 else
-                    Toast.makeText(
+                    viewModel.sendIntervalsConfigurations(intervalsConfig)
+                    /*Toast.makeText(
                         context,
                         "Please set the Wifi Configurations in order to be able to use the app.",
                         Toast.LENGTH_SHORT
-                    ).show()
+                    ).show()*/
             }
         }
         //endregion
@@ -201,11 +249,13 @@ class MainFragment : Fragment() {
             if (BASE_URL != "http://192.168.4.1:80")
                 viewModel.sendMotionConfigurations(motionSensorConfig)
             else
+                viewModel.sendMotionConfigurations(motionSensorConfig)
+            /*
                 Toast.makeText(
                     context,
                     "Please set the Wifi Configurations in order to be able to use the app.",
                     Toast.LENGTH_SHORT
-                ).show()
+                ).show()*/
         }
         //endregion
 
@@ -244,11 +294,12 @@ class MainFragment : Fragment() {
                 if (BASE_URL != "http://192.168.4.1:80")
                     viewModel.getOilData()
                 else
-                    Toast.makeText(
+                    viewModel.getOilData()
+                    /*Toast.makeText(
                         context,
                         "Please set the Wifi Configurations in order to be able to use the app.",
                         Toast.LENGTH_SHORT
-                    ).show()
+                    ).show()*/
             }
         }
 
@@ -288,5 +339,21 @@ class MainFragment : Fragment() {
             }
         }
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
+        // Get the Intent that started this activity and extract the string
+        Log.d("TOTONAY","7mada b el ganzabeeel")
+        val inputStreamReader = InputStreamReader(
+            requireContext().openFileInput(
+                "config.txt"
+            )
+        )
+        BASE_URL = inputStreamReader.readText()
+        inputStreamReader.close()
+
+        Log.d("TOTONAY", "7mada $BASE_URL")
+    }
 }
+
+

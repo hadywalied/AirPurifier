@@ -30,6 +30,7 @@ class MainViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+
                 errorLivedata.postValue(t.message)
             }
 
@@ -68,6 +69,21 @@ class MainViewModel : ViewModel() {
                 }
 
             })
+        //CONFIG_URL
+        ap.sendLightConfig(CONFIG_URL + "/setRGBLEDS", lightConfig)
+            .enqueue(object : Callback<ResponseMessage> {
+                override fun onResponse(
+                    call: Call<ResponseMessage>,
+                    response: Response<ResponseMessage>
+                ) {
+                    responselivedata.postValue(response.body())
+                }
+
+                override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+                    errorLivedata.postValue(t.message)
+                }
+
+            })
     }
 
     fun sendMotionConfigurations(motionSensorConfig: MotionSensorConfig) {
@@ -85,6 +101,23 @@ class MainViewModel : ViewModel() {
                 }
 
             })
+        //CONFIG_URL
+        ap.sendMotionConfig(CONFIG_URL + "/motionSensor", motionSensorConfig)
+            .enqueue(object : Callback<ResponseMessage> {
+                override fun onResponse(
+                    call: Call<ResponseMessage>,
+                    response: Response<ResponseMessage>
+                ) {
+                    responselivedata.postValue(response.body())
+                }
+
+                override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+                    errorLivedata.postValue(t.message)
+                }
+
+            })
+
+
     }
 
 
@@ -103,11 +136,40 @@ class MainViewModel : ViewModel() {
                 }
 
             })
+        //CONFIG_URL
+        ap.sendInterval(CONFIG_URL + "/intervals", intervalsConfig)
+            .enqueue(object : Callback<ResponseMessage> {
+                override fun onResponse(
+                    call: Call<ResponseMessage>,
+                    response: Response<ResponseMessage>
+                ) {
+                    responselivedata.postValue(response.body())
+                }
+
+                override fun onFailure(call: Call<ResponseMessage>, t: Throwable) {
+                    errorLivedata.postValue(t.message)
+                }
+
+            })
     }
 
 
     fun getOilData() {
         ap.getOil(BASE_URL + "/oil").enqueue(object : Callback<OilData> {
+            override fun onResponse(
+                call: Call<OilData>,
+                response: Response<OilData>
+            ) {
+                oillivedata.postValue(response.body())
+            }
+
+            override fun onFailure(call: Call<OilData>, t: Throwable) {
+                errorLivedata.postValue(t.message)
+            }
+
+        })
+        //CONFIG_URL
+        ap.getOil(CONFIG_URL + "/oil").enqueue(object : Callback<OilData> {
             override fun onResponse(
                 call: Call<OilData>,
                 response: Response<OilData>
